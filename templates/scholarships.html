@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scholarships | StudentGuide</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        .sch-page {
+            max-width: 1200px;
+            margin: auto;
+            padding: 35px 20px 60px;
+            color: #172554;
+        }
+
+        .sch-heading {
+            text-align: center;
+            padding: 35px 15px;
+            background: linear-gradient(120deg, #2457D6, #55B9F5);
+            color: white;
+            border-radius: 18px;
+            margin-bottom: 25px;
+        }
+
+        .sch-heading h1 { margin-bottom: 10px; }
+
+        .sch-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 25px 0;
+        }
+
+        .sch-controls input, .sch-controls select {
+            flex: 1;
+            min-width: 200px;
+            padding: 13px;
+            border: 1px solid #cbdcf5;
+            border-radius: 9px;
+            background: white;
+            color: #172554;
+        }
+
+        .sch-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .sch-card {
+            background: white;
+            border: 1px solid #dbeafe;
+            border-radius: 15px;
+            padding: 22px;
+            box-shadow: 0 5px 18px rgba(36,87,214,.09);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .sch-card h3 { color: #2457D6; margin: 0; }
+
+        .sch-tag {
+            display: inline-block;
+            background: #eaf3ff;
+            color: #2457D6;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            width: fit-content;
+        }
+
+        .sch-card p { margin: 0; line-height: 1.6; }
+
+        .sch-btn {
+            display: inline-block;
+            border: 0;
+            border-radius: 8px;
+            background: linear-gradient(120deg, #2457D6, #55B9F5);
+            color: white;
+            padding: 11px 16px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .sch-btn:hover { opacity: .9; }
+
+        .sch-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(10, 25, 55, .65);
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .sch-modal-content {
+            background: white;
+            max-width: 750px;
+            margin: 35px auto;
+            border-radius: 16px;
+            padding: 28px;
+            position: relative;
+            color: #172554;
+        }
+
+        .sch-close {
+            position: absolute;
+            top: 12px;
+            right: 18px;
+            border: none;
+            background: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #2457D6;
+        }
+
+        .sch-detail-section {
+            padding: 13px 0;
+            border-bottom: 1px solid #e2eaf5;
+        }
+
+        .sch-detail-section h3 {
+            color: #2457D6;
+            margin-bottom: 7px;
+        }
+
+        .sch-detail-section p {
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        .sch-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .sch-empty {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+            display: none;
+        }
+
+        @media(max-width: 600px) {
+            .sch-page { padding: 20px 12px; }
+            .sch-modal-content { padding: 22px 16px; }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="sch-page">
+
+    <section class="sch-heading">
+        <h1>Available Scholarships</h1>
+        <p>Explore scholarships in India and other countries.
+           Understand eligibility, benefits and application requirements.</p>
+    </section>
+
+    <div class="sch-controls">
+        <input type="search" id="schSearch"
+               placeholder="Search scholarship name...">
+
+        <select id="countryFilter">
+            <option value="India">India</option>
+        </select>
+
+        <select id="levelFilter">
+            <option value="all">All Education Levels</option>
+            <option value="School">School</option>
+            <option value="Undergraduate">Undergraduate</option>
+            <option value="Postgraduate">Postgraduate</option>
+            <option value="Research">Research</option>
+        </select>
+    </div>
+
+    <h2>Scholarship Opportunities</h2>
+    <p id="schCount"></p>
+
+    <div class="sch-grid" id="schGrid"></div>
+
+    <div class="sch-empty" id="schEmpty">
+        No matching scholarships found. Try another search.
+    </div>
+
+</div>
+
+<div class="sch-modal" id="schModal">
+    <div class="sch-modal-content">
+        <button class="sch-close" onclick="closeScholarship()"
+                aria-label="Close">&times;</button>
+        <div id="schDetails"></div>
+    </div>
+</div>
+
+<script>
+const scholarships = [{
+name:"National Means-cum-Merit Scholarship (NMMS)",
+country:"India", level:"School", category:"Merit",
+purpose:"Financial support for eligible students continuing education after Class 8.",
+eligibility:"Students studying in Class 8 in eligible government, government-aided or local body schools. Family income and other conditions apply.",
+marks:"Generally at least 55% in Class 7, with applicable relaxation for SC/ST students. Verify the current notification.",
+test:"Yes. State-level selection generally includes a Mental Ability Test and Scholastic Aptitude Test.",
+benefit:"Scholarship assistance for continuing studies in Classes 9 to 12, subject to scheme conditions.",
+documents:"Previous marksheet, income certificate, school details, bank details and applicable category certificate.",
+url:"https://scholarships.gov.in/"
+},
+{
+name:"PM-USP Central Sector Scholarship (CSSS)",
+country:"India", level:"Undergraduate", category:"Merit",
+purpose:"Financial assistance for meritorious students from families with limited income pursuing higher education.",
+eligibility:"Students meeting the prescribed Class 12 board merit requirement, pursuing a regular eligible college course and satisfying family-income conditions.",
+marks:"Generally above the 80th percentile in the relevant Class 12 board examination. Verify current guidelines.",
+test:"No separate scholarship entrance test is generally specified. Selection uses Class 12 performance and scheme conditions.",
+benefit:"Financial assistance towards eligible undergraduate and postgraduate education.",
+documents:"Class 12 marksheet, income certificate, admission proof and bank details.",
+url:"https://scholarships.gov.in/"
+},
+{
+name:"AICTE Pragati Scholarship",
+country:"India", level:"Undergraduate", category:"Technical Education",
+purpose:"Supports eligible girl students pursuing technical diploma or degree education.",
+eligibility:"Eligible girl students admitted to AICTE-approved technical institutions. Family-income and other conditions apply.",
+marks:"Academic and admission conditions are specified in the current AICTE notification.",
+test:"No separate scholarship test is generally specified.",
+benefit:"Financial assistance towards eligible education expenses.",
+documents:"Admission proof, marksheets, income certificate and bank details.",
+url:"https://www.aicte-india.org/"
+},
+{
+name:"AICTE Saksham Scholarship",
+country:"India", level:"Undergraduate", category:"Technical Education",
+purpose:"Supports eligible specially-abled students pursuing technical education.",
+eligibility:"Students with benchmark disabilities admitted to eligible AICTE-approved diploma or degree programmes. Income and other conditions apply.",
+marks:"Follow the current academic and admission requirements.",
+test:"No separate scholarship test is generally specified.",
+benefit:"Financial assistance for eligible technical education expenses.",
+documents:"Disability certificate, admission proof, income certificate and marksheets.",
+url:"https://www.aicte-india.org/"
+},
+{
+name:"AICTE Swanath Scholarship",
+country:"India", level:"Undergraduate", category:"Technical Education",
+purpose:"Financial support for eligible students from specified vulnerable backgrounds pursuing technical education.",
+eligibility:"Eligible orphans, students whose parents died due to COVID-19, and wards of eligible armed forces or Central Paramilitary Forces personnel, as defined by scheme rules.",
+marks:"Current academic and admission requirements apply.",
+test:"No separate scholarship entrance test is generally specified.",
+benefit:"Financial assistance for eligible technical education.",
+documents:"Relevant supporting certificate, admission proof, marksheets and bank details.",
+url:"https://www.aicte-india.org/"
+},
+{
+name:"PM YASASVI Scholarship",
+country:"India", level:"School", category:"Social Welfare",
+purpose:"Supports eligible students from OBC, EBC and DNT communities.",
+eligibility:"Students belonging to eligible OBC, EBC and DNT groups and meeting the relevant school or college scheme conditions.",
+marks:"Academic conditions vary by scheme component.",
+test:"Check the current notification. Do not assume a separate entrance test applies to every component.",
+benefit:"Financial support for eligible educational expenses.",
+documents:"Community certificate, income certificate, marksheets, admission proof and bank details.",
+url:"https://scholarships.gov.in/"
+},
+{
+name:"Post-Matric Scholarship for SC Students",
+country:"India", level:"Undergraduate", category:"Social Welfare",
+purpose:"Supports eligible Scheduled Caste students studying after Class 10.",
+eligibility:"SC students pursuing eligible post-matric education and meeting the prescribed family-income and other conditions.",
+marks:"Previous examination and course progression requirements apply.",
+test:"No separate scholarship entrance test is generally required.",
+benefit:"Eligible maintenance allowance and approved fees, as per scheme rules.",
+documents:"SC certificate, income certificate, marksheet, admission proof and bank details.",
+url:"https://scholarships.gov.in/"
+},
+{
+name:"Pre-Matric Scholarship for Students with Disabilities",
+country:"India", level:"School", category:"Social Welfare",
+purpose:"Supports eligible students with disabilities at the pre-matric education level.",
+eligibility:"Students with disabilities who meet prescribed disability, school, income and other conditions.",
+marks:"Previous academic performance requirements are specified in the current notification.",
+test:"No separate entrance test is generally required.",
+benefit:"Financial assistance towards eligible educational expenses.",
+documents:"Disability certificate or UDID, income certificate, school proof and bank details.",
+url:"https://scholarships.gov.in/"
+},
+{
+name:"Post-Matric Scholarship for Students with Disabilities",
+country:"India", level:"Undergraduate", category:"Social Welfare",
+purpose:"Supports eligible students with disabilities studying after Class 10.",
+eligibility:"Students with disabilities pursuing eligible post-matric courses and satisfying income and other conditions.",
+marks:"Academic progression and course conditions apply.",
+test:"No separate scholarship entrance test is generally required.",
+benefit:"Eligible financial assistance for education and approved expenses.",
+documents:"Disability certificate or UDID, income certificate, admission proof and marksheets.",
+url:"https://scholarships.gov.in/"
+},
+{
+name:"Ishan Uday Special Scholarship",
+country:"India", level:"Undergraduate", category:"Regional",
+purpose:"Supports eligible students from the North Eastern Region pursuing higher education.",
+eligibility:"Students from the North Eastern Region who satisfy domicile, income, admission and course conditions.",
+marks:"Class 12 performance and eligibility conditions are specified in current UGC guidelines.",
+test:"No separate scholarship entrance test is generally specified.",
+benefit:"Financial assistance towards eligible undergraduate education.",
+documents:"Domicile certificate, income certificate, Class 12 marksheet, admission proof and bank details.",
+url:"https://scholarships.gov.in/"
+},
+{
+name:"National Scholarship for Post Graduate Studies",
+country:"India", level:"Postgraduate", category:"Merit",
+purpose:"Supports eligible students pursuing postgraduate education in India.",
+eligibility:"Students admitted to eligible postgraduate programmes and satisfying age, academic, institution and other conditions.",
+marks:"Previous undergraduate academic requirements apply.",
+test:"No separate scholarship test is generally specified. University admission requirements may include tests.",
+benefit:"Financial support towards postgraduate study.",
+documents:"Degree marksheets, admission proof and bank details.",
+url:"https://scholarships.gov.in/"
+},
+{
+name:"National Overseas Scholarship for SC Students",
+country:"India", level:"Postgraduate", category:"Overseas",
+purpose:"Supports eligible students from specified disadvantaged groups pursuing higher education abroad.",
+eligibility:"Eligible SC students admitted to approved foreign Master's or PhD programmes who satisfy income, academic, age and other conditions.",
+marks:"Prescribed minimum academic performance and admission conditions apply.",
+test:"No single scholarship entrance test applies to all applicants. University admission and language requirements may apply.",
+benefit:"Financial assistance towards approved overseas study expenses.",
+documents:"Community certificate, income documents, academic records and foreign university admission offer.",
+url:"https://socialjustice.gov.in/"
+},
+{
+name:"National Fellowship and Scholarship for Higher Education of ST Students",
+country:"India", level:"Postgraduate", category:"Social Welfare",
+purpose:"Supports eligible Scheduled Tribe students pursuing higher education.",
+eligibility:"ST students meeting prescribed course, institution, academic and income conditions.",
+marks:"Requirements depend on the component and course.",
+test:"Selection conditions differ between scholarship and fellowship components.",
+benefit:"Financial support for eligible higher education and research.",
+documents:"ST certificate, academic records and admission proof.",
+url:"https://tribal.nic.in/"
+},
+{
+name:"National Fellowship for SC Students",
+country:"India", level:"Research", category:"Research",
+purpose:"Provides fellowship support to eligible SC students pursuing research.",
+eligibility:"SC candidates admitted to eligible research programmes who satisfy current fellowship guidelines.",
+marks:"University admission and fellowship conditions apply.",
+test:"Selection depends on current fellowship rules and research admission requirements.",
+benefit:"Fellowship support for eligible research scholars.",
+documents:"SC certificate, postgraduate marksheets and research admission proof.",
+url:"https://socialjustice.gov.in/"
+},
+{
+name:"ICAR National Talent Scholarship",
+country:"India", level:"Undergraduate", category:"Agriculture",
+purpose:"Supports eligible students pursuing agricultural and allied science education under applicable ICAR rules.",
+eligibility:"Students admitted to eligible agricultural universities and programmes covered by ICAR scholarship rules.",
+marks:"Admission and academic requirements depend on the programme.",
+test:"ICAR admission requirements may include a qualifying entrance examination.",
+benefit:"Financial support subject to applicable ICAR rules.",
+documents:"Entrance and admission records, marksheets, university details and bank information.",
+url:"https://icar.org.in/"
+},{
+        name: "MEXT Japanese Government Scholarship",
+        country: "International",
+        level: "Undergraduate",
+        category: "Government Scholarship",
+        purpose: "Scholarship for international students to study in Japan.",
+        eligibility: "International students who meet the academic and age requirements.",
+        marks: "Academic requirements depend on the selected program.",
+        test: "Selection may include written examinations and interviews.",
+        benefit: "Tuition fees, monthly allowance and travel support.",
+        documents: "Academic certificates, transcripts, passport and application forms.",
+        url: "https://www.studyinjapan.go.jp/en/"
+    },
+    {
+        name: "Erasmus Mundus Joint Masters Scholarship",
+        country: "International",
+        level: "Postgraduate",
+        category: "International Scholarship",
+        purpose: "Supports students studying joint master's programs in Europe.",
+        eligibility: "Students with a recognized bachelor's degree or equivalent.",
+        marks: "Requirements vary by master's program.",
+        test: "Depends on the selected program.",
+        benefit: "May cover participation costs, travel and living allowance.",
+        documents: "Degree certificates, transcripts, CV, motivation letter and references.",
+        url: "https://erasmus-plus.ec.europa.eu/"
+    },
+    {
+        name: "Australia Awards Scholarships",
+        country: "International",
+        level: "Postgraduate",
+        category: "Government Scholarship",
+        purpose: "Supports students from eligible countries to study in Australia.",
+        eligibility: "Applicants must meet the country-specific eligibility requirements.",
+        marks: "Depends on the selected course and country requirements.",
+        test: "English language requirements may apply.",
+        benefit: "Tuition fees, travel, living expenses and other support.",
+        documents: "Academic records, passport, work experience and application documents.",
+        url: "https://www.dfat.gov.au/people-to-people/australia-awards"
+    },
+    {
+        name: "Chevening Scholarship",
+        country: "International",
+        level: "Postgraduate",
+        category: "Government Scholarship",
+        purpose: "Supports students pursuing a one-year master's degree in the UK.",
+        eligibility: "Applicants must meet Chevening's eligibility requirements.",
+        marks: "A qualifying undergraduate degree is required.",
+        test: "University admission and English requirements may apply.",
+        benefit: "Tuition fees, travel and living allowance.",
+        documents: "Degree certificates, references and application details.",
+        url: "https://www.chevening.org/"
+    },
+    {
+        name: "Fulbright Foreign Student Program",
+        country: "International",
+        level: "Postgraduate",
+        category: "International Scholarship",
+        purpose: "Supports international students pursuing higher education in the USA.",
+        eligibility: "Requirements vary by applicant country and program.",
+        marks: "Depends on the selected program.",
+        test: "English language tests may be required.",
+        benefit: "May include tuition, living costs and travel support.",
+        documents: "Academic transcripts, recommendations and application documents.",
+        url: "https://foreign.fulbrightonline.org/"
+    },
+    {
+        name: "DAAD Scholarships",
+        country: "International",
+        level: "Postgraduate",
+        category: "International Scholarship",
+        purpose: "Supports international students studying in Germany.",
+        eligibility: "Requirements depend on the selected DAAD scholarship.",
+        marks: "Academic requirements vary by program.",
+        test: "Language requirements depend on the course.",
+        benefit: "May include monthly payments, insurance and travel allowance.",
+        documents: "Academic certificates, CV, motivation letter and language proof.",
+        url: "https://www.daad.de/en/"
+    }];
+
+function renderScholarships() {
+    const grid = document.getElementById("schGrid");
+    const search = document.getElementById("schSearch").value.toLowerCase();
+    const country = document.getElementById("countryFilter").value;
+    const level = document.getElementById("levelFilter").value;
+
+    grid.innerHTML = "";
+
+    const filtered = scholarships.filter((s) => {
+        const matchesSearch =
+            s.name.toLowerCase().includes(search) ||
+            s.category.toLowerCase().includes(search) ||
+            s.purpose.toLowerCase().includes(search);
+
+        const matchesCountry = country === "all" || s.country === country;
+        const matchesLevel = level === "all" || s.level === level;
+
+        return matchesSearch && matchesCountry && matchesLevel;
+    });
+
+    document.getElementById("schCount").textContent =
+        "Showing " + filtered.length + " scholarship opportunities";
+
+    document.getElementById("schEmpty").style.display =
+        filtered.length === 0 ? "block" : "none";
+
+    filtered.forEach((s) => {
+        const index = scholarships.indexOf(s);
+
+        const card = document.createElement("div");
+        card.className = "sch-card";
+
+        const heading = document.createElement("h3");
+        heading.textContent = s.name;
+
+        const tag = document.createElement("span");
+        tag.className = "sch-tag";
+        tag.textContent = s.country + " | " + s.level;
+
+        const description = document.createElement("p");
+        description.textContent = s.purpose;
+
+        const button = document.createElement("button");
+        button.className = "sch-btn";
+        button.textContent = "View Full Details";
+        button.addEventListener("click", () => showScholarship(index));
+
+        card.append(heading, tag, description, button);
+        grid.appendChild(card);
+    });
+}
+
+function showScholarship(index) {
+    const s = scholarships[index];
+
+    document.getElementById("schDetails").innerHTML = `
+        <h2>${s.name}</h2>
+
+        <div class="sch-detail-section">
+            <h3>Country</h3>
+            <p>${s.country}</p>
+        </div>
+
+        <div class="sch-detail-section">
+            <h3>Education Level</h3>
+            <p>${s.level}</p>
+        </div>
+
+        <div class="sch-detail-section">
+            <h3>Purpose</h3>
+            <p>${s.purpose}</p>
+        </div>
+
+        <div class="sch-detail-section">
+            <h3>Eligibility</h3>
+            <p>${s.eligibility}</p>
+        </div>
+
+        <div class="sch-detail-section">
+            <h3>Marks Required</h3>
+            <p>${s.marks}</p>
+        </div>
+
+        <div class="sch-detail-section">
+            <h3>Entrance Test</h3>
+            <p>${s.test}</p>
+        </div>
+
+        <div class="sch-detail-section">
+            <h3>Benefits</h3>
+            <p>${s.benefit}</p>
+        </div>
+
+        <div class="sch-detail-section">
+            <h3>Required Documents</h3>
+            <p>${s.documents}</p>
+        </div>
+
+        <div class="sch-actions">
+            <a class="sch-btn" href="${s.url}" target="_blank" rel="noopener noreferrer">
+                Official Information / Apply
+            </a>
+        </div>
+    `;
+
+    document.getElementById("schModal").style.display = "block";
+}
+
+function closeScholarship() {
+    document.getElementById("schModal").style.display = "none";
+}
+
+document.getElementById("schSearch").addEventListener("input", renderScholarships);
+document.getElementById("countryFilter").addEventListener("change", renderScholarships);
+document.getElementById("levelFilter").addEventListener("change", renderScholarships);
+
+document.getElementById("schModal").addEventListener("click", function(event) {
+    if (event.target === this) {
+        closeScholarship();
+    }
+});
+
+renderScholarships();
+</script>
+
+</body>
+</html>

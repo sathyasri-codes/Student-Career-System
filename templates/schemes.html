@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Government Schemes</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #243047;
+        }
+
+        .scheme-container {
+            width: 92%;
+            max-width: 1200px;
+            margin: 35px auto;
+        }
+
+        .scheme-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .scheme-header h1 {
+            color: #173b70;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .scheme-header p {
+            color: #65738a;
+            font-size: 15px;
+        }
+
+        .scheme-filters {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .scheme-filters input,
+        .scheme-filters select {
+            flex: 1;
+            min-width: 180px;
+            padding: 13px;
+            border: 1px solid #ccd5e2;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+        }
+
+        .scheme-count {
+            margin-bottom: 18px;
+            color: #52627a;
+            font-size: 14px;
+        }
+
+        .scheme-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .scheme-card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            border: 1px solid #e1e7ef;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .scheme-card h3 {
+            color: #173b70;
+            font-size: 19px;
+            margin-bottom: 12px;
+        }
+
+        .scheme-tag {
+            display: inline-block;
+            background: #e7f0ff;
+            color: #24579b;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
+        .scheme-card p {
+            color: #647187;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .scheme-btn {
+            display: inline-block;
+            background: #1c5797;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 7px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .scheme-btn:hover {
+            background: #123d70;
+        }
+
+        .scheme-empty {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            color: #68758a;
+        }
+
+        .scheme-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            overflow-y: auto;
+            padding: 25px 12px;
+        }
+
+        .scheme-modal-content {
+            background: white;
+            width: 95%;
+            max-width: 700px;
+            margin: 30px auto;
+            padding: 25px;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .scheme-close {
+            position: absolute;
+            top: 12px;
+            right: 18px;
+            font-size: 28px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: #52627a;
+        }
+
+        .scheme-modal-content h2 {
+            color: #173b70;
+            margin: 10px 35px 20px 0;
+        }
+
+        .scheme-detail-section {
+            margin: 18px 0;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5eaf1;
+        }
+
+        .scheme-detail-section h3 {
+            color: #24579b;
+            font-size: 16px;
+            margin-bottom: 7px;
+        }
+
+        .scheme-detail-section p {
+            color: #52627a;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .scheme-actions {
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .scheme-container {
+                width: 94%;
+                margin: 22px auto;
+            }
+
+            .scheme-header h1 {
+                font-size: 25px;
+            }
+
+            .scheme-modal-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="scheme-container">
+
+        <div class="scheme-header">
+            <h1>Government Schemes</h1>
+            <p>Explore government schemes, eligibility, benefits and application details.</p>
+        </div>
+
+        <div class="scheme-filters">
+
+            <input
+                type="text"
+                id="schemeSearch"
+                placeholder="Search government schemes..."
+            >
+
+            <select id="regionFilter">
+                <option value="all">All Government Schemes</option>
+                <option value="Tamil Nadu">Tamil Nadu</option>
+                <option value="Central Government">Central Government</option>
+            </select>
+
+            <select id="categoryFilter">
+                <option value="all">All Categories</option>
+                <option value="Education">Education</option>
+                <option value="Student Welfare">Student Welfare</option>
+                <option value="Skill Development">Skill Development</option>
+                <option value="Financial Support">Financial Support</option>
+                <option value="Reservation & Admission">Reservation & Admission</option>
+                <option value="Hostel & Accommodation">Hostel & Accommodation</option>
+            </select>
+
+        </div>
+
+        <p class="scheme-count" id="schemeCount"></p>
+
+        <div class="scheme-grid" id="schemeGrid"></div>
+
+        <div class="scheme-empty" id="schemeEmpty">
+            No schemes found. Try another search.
+        </div>
+
+    </div>
+
+    <div class="scheme-modal" id="schemeModal">
+
+        <div class="scheme-modal-content">
+
+            <button class="scheme-close" onclick="closeScheme()">
+                &times;
+            </button>
+
+            <div id="schemeDetails"></div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        const schemes = [
+
+    {
+        name: "Pudhumai Penn Scheme",
+        region: "Tamil Nadu",
+        category: "Education",
+        purpose: "Encourages eligible girl students from government schools to continue higher education.",
+        eligibility: "Eligible girls who studied Classes 6 to 12 in Tamil Nadu government schools and are pursuing higher education, subject to scheme rules.",
+        benefits: "Monthly financial assistance of Rs. 1,000, subject to current eligibility rules.",
+        documents: "Aadhaar, school study records, college admission proof and bank account details.",
+        apply: "Apply through the college and the official scheme process.",
+        url: "https://penkalvi.tn.gov.in/"
+    },
+    {
+        name: "Tamil Pudhalvan Scheme",
+        region: "Tamil Nadu",
+        category: "Education",
+        purpose: "Encourages eligible boys from government schools to continue higher education.",
+        eligibility: "Eligible boys who studied Classes 6 to 12 in Tamil Nadu government schools and are pursuing higher education.",
+        benefits: "Monthly financial assistance of Rs. 1,000, subject to scheme conditions.",
+        documents: "Aadhaar, school study records, college admission proof and bank account details.",
+        apply: "Apply through the college and the official scheme process.",
+        url: "https://www.tn.gov.in/"
+    },
+    {
+        name: "Naan Mudhalvan Scheme",
+        region: "Tamil Nadu",
+        category: "Skill Development",
+        purpose: "Provides career guidance and skill training to help students prepare for higher studies and employment.",
+        eligibility: "Students in participating schools, colleges and educational institutions.",
+        benefits: "Skill courses, career guidance, learning resources and eligible certification opportunities.",
+        documents: "Student details and institution information required by the platform.",
+        apply: "Explore available courses through the official portal.",
+        url: "https://naanmudhalvan.tn.gov.in/"
+    },
+    {
+        name: "Tamil Nadu 7.5% Government School Students Reservation",
+        region: "Tamil Nadu",
+        category: "Reservation & Admission",
+        purpose: "Improves access to professional higher education for eligible students from Tamil Nadu government schools.",
+        eligibility: "Students who studied Classes 6 to 12 in eligible Tamil Nadu government schools and satisfy the applicable professional-course admission rules.",
+        benefits: "7.5% preferential reservation in eligible professional-course admissions. Fee reimbursement is subject to the applicable government rules.",
+        documents: "School study certificates, admission application records and other documents required by the counselling authority.",
+        apply: "Apply through the relevant professional-course admission and counselling process.",
+        url: "https://www.tn.gov.in/"
+    },{
+        name: "Tamil Nadu Free Bicycle Scheme",
+        region: "Tamil Nadu",
+        category: "Student Welfare",
+        purpose: "Helps students travel to school and encourages them to continue their education.",
+        eligibility: "Eligible students studying in Class 11 in government and eligible government-aided schools.",
+        benefits: "Free bicycle according to the current government scheme rules.",
+        documents: "School enrolment details and student records.",
+        apply: "Eligible students are generally identified through their schools.",
+        url: "https://www.tn.gov.in/"
+    },
+    {
+        name: "Chief Minister's Breakfast Scheme",
+        region: "Tamil Nadu",
+        category: "Student Welfare",
+        purpose: "Improves children's nutrition and encourages regular school attendance.",
+        eligibility: "Children studying in eligible government primary schools covered by the scheme.",
+        benefits: "Free breakfast on eligible school days.",
+        documents: "School enrolment details. A separate application is normally not required.",
+        apply: "The benefit is provided through participating schools.",
+        url: "https://www.tn.gov.in/"
+    },
+    {
+        name: "Tamil Nadu Post-Matric Scholarship for SC/ST Students",
+        region: "Tamil Nadu",
+        category: "Financial Support",
+        purpose: "Helps eligible Scheduled Caste and Scheduled Tribe students continue education after school.",
+        eligibility: "SC/ST students studying in recognized post-matric courses who meet applicable income and course conditions.",
+        benefits: "Eligible tuition fees, compulsory fees and maintenance assistance according to government rules.",
+        documents: "Community certificate, income certificate where required, Aadhaar, bank details and educational certificates.",
+        apply: "Apply through the institution and the applicable government scholarship portal.",
+        url: "https://ssp.tn.gov.in/"
+    },
+    {
+        name: "Tamil Nadu First Graduate Tuition Fee Concession",
+        region: "Tamil Nadu",
+        category: "Financial Support",
+        purpose: "Helps students from families without a graduate member access higher education.",
+        eligibility: "Eligible first-generation graduates admitted to approved professional courses, subject to government conditions.",
+        benefits: "Eligible tuition fee concession according to the applicable government rules.",
+        documents: "First graduate certificate, family details and admission records.",
+        apply: "Apply through the college with the required certificates.",
+        url: "https://www.tn.gov.in/"
+    },
+    {
+        name: "BC, MBC and DNC Free Education Scheme",
+        region: "Tamil Nadu",
+        category: "Financial Support",
+        purpose: "Supports eligible students from Backward Classes, Most Backward Classes and Denotified Communities in continuing education.",
+        eligibility: "Students belonging to eligible BC, MBC or DNC communities who join covered diploma or professional courses and meet the applicable conditions.",
+        benefits: "Eligible educational fees are supported according to the scheme rules.",
+        documents: "Community certificate, income certificate where required, admission proof and academic records.",
+        apply: "Contact the college office or District Backward Classes Welfare Office.",
+        url: "https://bcmbcmw.tn.gov.in/welfschemes.htm"
+    },
+    {
+        name: "Tamil Nadu Government Hostel Scheme for BC, MBC and DNC Students",
+        region: "Tamil Nadu",
+        category: "Hostel & Accommodation",
+        purpose: "Helps students continue their education when their schools or colleges are far from home.",
+        eligibility: "Eligible BC, MBC and DNC students who satisfy the government hostel admission conditions.",
+        benefits: "Hostel accommodation and facilities according to the rules of the concerned government hostel.",
+        documents: "Community certificate, school or college admission proof, address details and other documents requested by the hostel.",
+        apply: "Contact the District Backward Classes and Minorities Welfare Office or the concerned government hostel.",
+        url: "https://bcmbcmw.tn.gov.in/welfschemes.htm"
+    },
+    {
+        name: "Tamil Nadu Boarding Grant Scheme",
+        region: "Tamil Nadu",
+        category: "Student Welfare",
+        purpose: "Provides boarding-related assistance to eligible students so they can continue their education.",
+        eligibility: "Students from eligible communities who meet the current boarding grant conditions.",
+        benefits: "Boarding assistance according to applicable government rules.",
+        documents: "Community certificate, educational records, residence details and documents requested by the department.",
+        apply: "Contact the District Backward Classes and Minorities Welfare Office.",
+        url: "https://bcmbcmw.tn.gov.in/welfschemes.htm"
+    },
+    {
+        name: "Rural Girls Incentive Scheme",
+        region: "Tamil Nadu",
+        category: "Education",
+        purpose: "Encourages eligible rural girl students to continue their school education.",
+        eligibility: "Eligible MBC and DNC girl students studying in specified classes in government or government-aided rural schools, subject to income and other conditions.",
+        benefits: "Financial incentive according to the class and current scheme rules.",
+        documents: "Community certificate, school records and parent or guardian income details where required.",
+        apply: "Contact the headmaster of the school.",
+        url: "https://bcmbcmw.tn.gov.in/welfschemes.htm"
+    },
+    {
+        name: "Tamil Nadu Free Education Assistance for Polytechnic Students",
+        region: "Tamil Nadu",
+        category: "Financial Support",
+        purpose: "Encourages eligible students to pursue diploma-level technical education.",
+        eligibility: "Eligible BC, MBC and DNC students joining covered polytechnic courses and satisfying scheme conditions.",
+        benefits: "Eligible educational fee support according to government rules.",
+        documents: "Community certificate, income certificate where required, admission proof and academic records.",
+        apply: "Contact the college scholarship section or District Backward Classes Welfare Office.",
+        url: "https://bcmbcmw.tn.gov.in/welfschemes.htm"
+    },
+    {
+        name: "Tamil Nadu District Level Educational Merit Awards",
+        region: "Tamil Nadu",
+        category: "Education",
+        purpose: "Recognizes academic achievement and encourages students to perform well in public examinations.",
+        eligibility: "Students who meet the examination, community and district-level merit conditions announced by the department.",
+        benefits: "Awards or prizes according to the current government notification.",
+        documents: "Public examination mark sheet, school records and community certificate where required.",
+        apply: "Check with the school or District Backward Classes and Minorities Welfare Office.",
+        url: "https://www.tn.gov.in/"
+    },{
+        name: "PM YASASVI Pre-Matric Scholarship",
+        region: "Central Government",
+        category: "Financial Support",
+        purpose: "Helps eligible OBC, EBC and DNT students continue school education.",
+        eligibility: "Students belonging to eligible OBC, EBC and DNT communities studying in the classes covered by the current scheme guidelines.",
+        benefits: "Scholarship assistance according to class and current government rules.",
+        documents: "Community certificate, income certificate, school records, Aadhaar and bank details.",
+        apply: "Check the current application process through the National Scholarship Portal or the concerned state department.",
+        url: "https://scholarships.gov.in/"
+    },
+    {
+        name: "PM YASASVI Post-Matric Scholarship",
+        region: "Central Government",
+        category: "Financial Support",
+        purpose: "Supports eligible OBC, EBC and DNT students pursuing education after school.",
+        eligibility: "Students from eligible OBC, EBC and DNT communities studying recognized post-matric courses and meeting income conditions.",
+        benefits: "Eligible course fees and maintenance assistance according to scheme rules.",
+        documents: "Community certificate, income certificate, admission proof, academic records and bank details.",
+        apply: "Apply through the relevant state scholarship process or official portal.",
+        url: "https://socialjustice.gov.in/schemes/101"
+    },
+    {
+        name: "PM YASASVI Top Class Education in Schools",
+        region: "Central Government",
+        category: "Education",
+        purpose: "Helps eligible students from disadvantaged communities access quality school education.",
+        eligibility: "Eligible OBC, EBC and DNT students admitted to schools covered by the scheme and meeting its income and selection conditions.",
+        benefits: "Education-related financial assistance according to the current scheme guidelines.",
+        documents: "Community certificate, income certificate, school admission proof and other required records.",
+        apply: "Check eligibility and apply through the National Scholarship Portal when applications are open.",
+        url: "https://scholarships.gov.in/"
+    },
+    {
+        name: "PM YASASVI Top Class College Education",
+        region: "Central Government",
+        category: "Financial Support",
+        purpose: "Helps eligible OBC, EBC and DNT students study in selected higher education institutions.",
+        eligibility: "Eligible students admitted to notified institutions and meeting community and family income requirements.",
+        benefits: "Eligible tuition, academic expenses and other assistance according to scheme rules.",
+        documents: "Community certificate, income certificate, admission proof, academic records and bank details.",
+        apply: "Apply through the National Scholarship Portal.",
+        url: "https://scholarships.gov.in/"
+    },
+    {
+        name: "Top Class Education for SC Students",
+        region: "Central Government",
+        category: "Financial Support",
+        purpose: "Supports Scheduled Caste students in accessing quality higher education.",
+        eligibility: "SC students admitted to notified institutions who meet the applicable family income and selection conditions.",
+        benefits: "Eligible tuition fees and other educational assistance according to scheme guidelines.",
+        documents: "SC community certificate, income certificate, admission proof, academic records and bank details.",
+        apply: "Check the scheme availability and application instructions on the National Scholarship Portal.",
+        url: "https://scholarships.gov.in/"
+    },
+    {
+        name: "National Fellowship and Scholarship for Higher Education of ST Students",
+        region: "Central Government",
+        category: "Financial Support",
+        purpose: "Encourages Scheduled Tribe students to pursue higher education.",
+        eligibility: "ST students who meet the course, institution and other requirements of the applicable fellowship or scholarship component.",
+        benefits: "Scholarship or fellowship assistance according to the selected component and current rules.",
+        documents: "ST certificate, academic records, admission proof, income details where required and bank details.",
+        apply: "Check the relevant application route through the National Scholarship Portal and Ministry of Tribal Affairs.",
+        url: "https://scholarships.gov.in/"
+    },
+    {
+        name: "Free Coaching Scheme for SC, OBC and PM CARES Children",
+        region: "Central Government",
+        category: "Education",
+        purpose: "Helps eligible students prepare for competitive examinations and improve access to educational opportunities.",
+        eligibility: "Eligible SC and OBC students and beneficiaries covered by the PM CARES Children scheme, subject to current selection rules.",
+        benefits: "Coaching assistance for notified competitive examinations according to scheme conditions.",
+        documents: "Community certificate where applicable, income certificate, educational records and identity documents.",
+        apply: "Check the current application notification from the Ministry of Social Justice and Empowerment.",
+        url: "https://socialjustice.gov.in/"
+    },
+    {
+        name: "SHRESHTA Scheme",
+        region: "Central Government",
+        category: "Education",
+        purpose: "Provides quality residential school education opportunities for eligible Scheduled Caste students.",
+        eligibility: "Eligible SC students who meet the prescribed class, income and selection requirements.",
+        benefits: "Educational and residential support in selected schools according to scheme rules.",
+        documents: "SC certificate, income certificate, school records and required selection documents.",
+        apply: "Check the Ministry of Social Justice and Empowerment for current selection details.",
+        url: "https://socialjustice.gov.in/"
+    },
+    {
+        name: "National Overseas Scholarship for SC Students",
+        region: "Central Government",
+        category: "Financial Support",
+        purpose: "Helps eligible students from disadvantaged communities pursue higher studies abroad.",
+        eligibility: "Eligible SC and other notified category candidates who meet the course, admission, income and academic requirements.",
+        benefits: "Financial assistance for approved overseas higher education according to scheme rules.",
+        documents: "Community certificate, admission letter, academic records, income documents and passport.",
+        apply: "Check the current application notification from the Ministry of Social Justice and Empowerment.",
+        url: "https://socialjustice.gov.in/"
+    },
+    {
+        name: "PM-Vidyalaxmi Education Loan Scheme",
+        region: "Central Government",
+        category: "Financial Support",
+        purpose: "Helps students access higher education without financial barriers.",
+        eligibility: "Students admitted on merit to eligible quality higher education institutions covered by the scheme.",
+        benefits: "Collateral-free and guarantor-free education loans for eligible students; qualifying students may receive interest subvention according to income and scheme rules.",
+        documents: "Admission proof, identity documents, academic records, family income details and bank documents.",
+        apply: "Apply through the official PM-Vidyalaxmi portal.",
+        url: "https://pmvidyalaxmi.co.in/"
+    },
+    {
+        name: "PM POSHAN Scheme",
+        region: "Central Government",
+        category: "Student Welfare",
+        purpose: "Improves children's nutrition and supports school attendance.",
+        eligibility: "Children studying in eligible government and government-aided schools covered by the scheme.",
+        benefits: "Nutritious cooked meals on eligible school days.",
+        documents: "School enrolment details. A separate application is normally not required.",
+        apply: "The benefit is provided through participating schools.",
+        url: "https://pmposhan.education.gov.in/"
+    },
+    {
+        name: "Samagra Shiksha Scheme",
+        region: "Central Government",
+        category: "Student Welfare",
+        purpose: "Improves school education from pre-primary to Class 12 and supports inclusive learning.",
+        eligibility: "Students studying in schools covered by the programme.",
+        benefits: "Support for school infrastructure, learning materials, inclusive education and educational activities.",
+        documents: "School enrolment details and documents required by the school for specific benefits.",
+        apply: "Contact the school to understand available support.",
+        url: "https://samagra.education.gov.in/"
+    },
+    {
+        name: "National Scholarship for Students with Disabilities",
+        region: "Central Government",
+        category: "Financial Support",
+        purpose: "Supports students with disabilities in continuing their education.",
+        eligibility: "Students with benchmark disabilities who meet the class, disability, income and other requirements of the relevant scholarship.",
+        benefits: "Educational assistance according to the applicable pre-matric, post-matric or higher education scholarship rules.",
+        documents: "Disability certificate or UDID, academic records, income certificate, Aadhaar and bank details.",
+        apply: "Check the relevant scholarship on the National Scholarship Portal.",
+        url: "https://scholarships.gov.in/"
+    },{
+        name: "National Scholarship Portal – Other Central Scholarships",
+        region: "Central Government",
+        category: "Financial Support",
+        purpose: "Provides a common platform to find and apply for different Central Government scholarship programmes.",
+        eligibility: "Depends on the individual scholarship, including education level, category, family income and academic requirements.",
+        benefits: "Financial assistance according to the selected scholarship.",
+        documents: "Aadhaar, academic certificates, income certificate, community certificate where applicable and bank details.",
+        apply: "Search for currently available scholarships and apply through the National Scholarship Portal.",
+        url: "https://scholarships.gov.in/"
+    },
+    {
+        name: "National Means-cum-Merit Scholarship Scheme",
+        region: "Central Government",
+        category: "Education",
+        purpose: "Encourages talented students from economically weaker families to continue education after Class 8.",
+        eligibility: "Eligible Class 8 students who satisfy the prescribed examination, income and school conditions.",
+        benefits: "Scholarship assistance of Rs. 12,000 per year, subject to scheme rules.",
+        documents: "Income certificate, school records, examination details, Aadhaar and bank details.",
+        apply: "Apply through the official scholarship process when applications are open.",
+        url: "https://scholarships.gov.in/"
+    },
+    {
+        name: "PM Kaushal Vikas Yojana",
+        region: "Central Government",
+        category: "Skill Development",
+        purpose: "Helps young people develop practical and industry-related skills.",
+        eligibility: "Candidates who meet the age, course and training-centre requirements of available programmes.",
+        benefits: "Eligible skill training, assessment and certification.",
+        documents: "Identity proof, educational details and documents required by the training centre.",
+        apply: "Explore available training opportunities through the Skill India platform.",
+        url: "https://www.skillindiadigital.gov.in/"
+    },
+    {
+        name: "National Apprenticeship Promotion Scheme",
+        region: "Central Government",
+        category: "Skill Development",
+        purpose: "Promotes practical workplace learning through apprenticeship training.",
+        eligibility: "Candidates who satisfy the age, education and trade requirements of an available apprenticeship.",
+        benefits: "Practical workplace training and eligible government support towards apprenticeship training.",
+        documents: "Aadhaar, educational certificates, bank details and other documents required for registration.",
+        apply: "Register and explore apprenticeship opportunities through the official portal.",
+        url: "https://www.apprenticeshipindia.gov.in/"
+    }
+
+        ];
+
+        function renderSchemes() {
+            const grid = document.getElementById("schemeGrid");
+
+            const search = document.getElementById("schemeSearch")
+                .value.toLowerCase();
+
+            const region = document.getElementById("regionFilter").value;
+            const category = document.getElementById("categoryFilter").value;
+
+            grid.innerHTML = "";
+
+            const filtered = schemes.filter((s) => {
+                const matchesSearch =
+                    s.name.toLowerCase().includes(search) ||
+                    s.purpose.toLowerCase().includes(search) ||
+                    s.category.toLowerCase().includes(search) ||
+                    s.eligibility.toLowerCase().includes(search);
+
+                const matchesRegion =
+                    region === "all" || s.region === region;
+
+                const matchesCategory =
+                    category === "all" || s.category === category;
+
+                return matchesSearch && matchesRegion && matchesCategory;
+            });
+
+            document.getElementById("schemeCount").textContent =
+                "Showing " + filtered.length + " government schemes";
+
+            document.getElementById("schemeEmpty").style.display =
+                filtered.length === 0 ? "block" : "none";
+
+            filtered.forEach((s) => {
+                const card = document.createElement("div");
+                card.className = "scheme-card";
+
+                const heading = document.createElement("h3");
+                heading.textContent = s.name;
+
+                const tag = document.createElement("span");
+                tag.className = "scheme-tag";
+                tag.textContent = s.region + " | " + s.category;
+
+                const description = document.createElement("p");
+                description.textContent = s.purpose;
+
+                const button = document.createElement("button");
+                button.className = "scheme-btn";
+                button.textContent = "View Full Details";
+
+                button.addEventListener("click", () => showScheme(s));
+
+                card.append(heading, tag, description, button);
+                grid.appendChild(card);
+            });
+        }
+
+        function showScheme(s) {
+            const details = document.getElementById("schemeDetails");
+
+            details.innerHTML = "";
+
+            const heading = document.createElement("h2");
+            heading.textContent = s.name;
+            details.appendChild(heading);
+
+            const sections = [
+                ["Government", s.region],
+                ["Category", s.category],
+                ["Why was this scheme introduced?", s.purpose],
+                ["Who is eligible?", s.eligibility],
+                ["Benefits", s.benefits],
+                ["Required Documents", s.documents],
+                ["How to Apply", s.apply]
+            ];
+
+            sections.forEach(([title, value]) => {
+                const section = document.createElement("div");
+                section.className = "scheme-detail-section";
+
+                const sectionHeading = document.createElement("h3");
+                sectionHeading.textContent = title;
+
+                const paragraph = document.createElement("p");
+                paragraph.textContent = value;
+
+                section.append(sectionHeading, paragraph);
+                details.appendChild(section);
+            });
+
+            const actions = document.createElement("div");
+            actions.className = "scheme-actions";
+
+            const link = document.createElement("a");
+            link.className = "scheme-btn";
+            link.textContent = "Official Information / Apply";
+            link.href = s.url;
+            link.target = "_blank";
+            link.rel = "noopener noreferrer";
+
+            actions.appendChild(link);
+            details.appendChild(actions);
+
+            document.getElementById("schemeModal").style.display = "block";
+        }
+
+        function closeScheme() {
+            document.getElementById("schemeModal").style.display = "none";
+        }
+
+        document.getElementById("schemeSearch")
+            .addEventListener("input", renderSchemes);
+
+        document.getElementById("regionFilter")
+            .addEventListener("change", renderSchemes);
+
+        document.getElementById("categoryFilter")
+            .addEventListener("change", renderSchemes);
+
+        document.getElementById("schemeModal")
+            .addEventListener("click", function(event) {
+                if (event.target === this) {
+                    closeScheme();
+                }
+            });
+
+        renderSchemes();
+
+    </script>
+
+</body>
+</html>

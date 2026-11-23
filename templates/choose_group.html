@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Guidance</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fc;
+            color: #243047;
+        }
+
+        .header {
+            background: #172554;
+            color: white;
+            padding: 25px 7%;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #dbeafe;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        .intro {
+            margin-bottom: 25px;
+        }
+
+        .intro h2 {
+            color: #172554;
+            margin-bottom: 10px;
+        }
+
+        .filter-box {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #0000000d;
+            margin-bottom: 28px;
+        }
+
+        .filter-box h3 {
+            margin-bottom: 18px;
+        }
+
+        .filter-form {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccd5e2;
+            border-radius: 7px;
+            font-size: 14px;
+        }
+
+        .filter-button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            padding: 12px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .clear-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .section-title {
+            margin: 25px 0 18px;
+            color: #172554;
+        }
+
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .course-card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 3px 12px #0000000d;
+        }
+
+        .course-card h3 {
+            color: #1e40af;
+            margin-bottom: 12px;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin: 3px 3px 10px 0;
+        }
+
+        .course-card p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .details-button {
+            display: inline-block;
+            background: #172554;
+            color: white;
+            text-decoration: none;
+            padding: 11px 16px;
+            border-radius: 7px;
+            margin-top: 8px;
+        }
+
+        .details-button:hover {
+            background: #2563eb;
+        }
+
+        .detail-box {
+            background: white;
+            padding: 28px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #0000000d;
+            margin-bottom: 30px;
+        }
+
+        .detail-box h2 {
+            color: #1e40af;
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #e2e8f0;
+            line-height: 1.7;
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-item h4 {
+            color: #172554;
+            margin-bottom: 6px;
+        }
+
+        .back-button {
+            display: inline-block;
+            background: #64748b;
+            color: white;
+            text-decoration: none;
+            padding: 11px 18px;
+            border-radius: 7px;
+            margin-top: 20px;
+        }
+
+        .empty-message {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            color: #64748b;
+        }
+
+        footer {
+            text-align: center;
+            padding: 22px;
+            margin-top: 40px;
+            background: #172554;
+            color: white;
+        }
+
+        @media (max-width: 850px) {
+            .course-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filter-form {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 550px) {
+            .course-grid,
+            .filter-form {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 23px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <h1>Student Career Guidance</h1>
+        <p>Explore courses and choose the right educational path for your future.</p>
+    </header>
+
+    <main class="container">
+
+        <section class="intro">
+            <h2>Explore Your Educational Opportunities</h2>
+            <p>
+                Find suitable school groups, college courses, diploma programmes
+                and ITI courses based on your education level and interests.
+            </p>
+        </section>
+
+        <section class="filter-box">
+            <h3>Find Your Course</h3>
+
+            <form method="GET"
+                  action="{{ url_for('choose_group') }}"
+                  class="filter-form">
+
+                <select name="level">
+                    <option value="">Select Education Level</option>
+
+                    <option value="After 10th"
+                        {% if selected_level == "After 10th" %}selected{% endif %}>
+                        After 10th
+                    </option>
+
+                    <option value="After 12th"
+                        {% if selected_level == "After 12th" %}selected{% endif %}>
+                        After 12th
+                    </option>
+                </select>
+
+                <select name="stream">
+                    <option value="">Select Stream</option>
+
+                    <option value="Science"
+                        {% if selected_stream == "Science" %}selected{% endif %}>
+                        Science
+                    </option>
+
+                    <option value="Commerce"
+                        {% if selected_stream == "Commerce" %}selected{% endif %}>
+                        Commerce
+                    </option>
+
+                    <option value="Arts"
+                        {% if selected_stream == "Arts" %}selected{% endif %}>
+                        Arts
+                    </option>
+                </select>
+
+                <select name="category">
+                    <option value="">Select Category</option>
+
+                    {% for category in [
+                        "School Group",
+                        "Engineering",
+                        "Medical",
+                        "Healthcare",
+                        "Agriculture",
+                        "Science",
+                        "Computer Applications",
+                        "Pharmacy",
+                        "Commerce",
+                        "Management",
+                        "Economics",
+                        "Finance",
+                        "Humanities",
+                        "Media",
+                        "Social Sciences",
+                        "Languages",
+                        "Diploma",
+                        "ITI",
+                        "Medical Diploma",
+                        "Pharmacy Diploma",
+                        "Management Diploma",
+                        "Finance Diploma",
+                        "Design Diploma",
+                        "Hospitality Diploma",
+                        "Aviation Diploma",
+                        "Education Diploma"
+                    ] %}
+                        <option value="{{ category }}"
+                            {% if selected_category == category %}selected{% endif %}>
+                            {{ category }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <input type="text"
+                       name="q"
+                       placeholder="Search courses..."
+                       value="{{ search_query }}">
+
+                <button type="submit" class="filter-button">
+                    Search Courses
+                </button>
+
+            </form>
+
+            <a href="{{ url_for('choose_group') }}" class="clear-link">
+                Clear Filters
+            </a>
+        </section>
+
+        {% if selected_course %}
+
+        <section class="detail-box">
+
+            <h2>{{ selected_course.name }}</h2>
+
+            <span class="tag">{{ selected_course.level }}</span>
+            <span class="tag">{{ selected_course.stream }}</span>
+            <span class="tag">{{ selected_course.category }}</span>
+
+            <div class="detail-item">
+                <h4>1. Course Description</h4>
+                <p>{{ selected_course.description }}</p>
+            </div>
+
+            <div class="detail-item">
+                <h4>2. Eligibility</h4>
+                <p>{{ selected_course.eligibility }}</p>
+            </div>
+
+            <div class="detail-item">
+                <h4>3. Duration</h4>
+                <p>{{ selected_course.duration }}</p>
+            </div>
+
+            <div class="detail-item">
+                <h4>4. Subjects</h4>
+                <p>{{ selected_course.subjects }}</p>
+            </div>
+
+            <div class="detail-item">
+                <h4>5. Admission Process</h4>
+                <p>{{ selected_course.admission }}</p>
+            </div>
+
+            <div class="detail-item">
+                <h4>6. Entrance Exams</h4>
+                <p>{{ selected_course.entrance_exams }}</p>
+            </div>
+
+            <div class="detail-item">
+                <h4>7. Career Opportunities</h4>
+                <p>{{ selected_course.careers }}</p>
+            </div>
+
+            <div class="detail-item">
+                <h4>8. Higher Study Options</h4>
+                <p>{{ selected_course.higher_studies }}</p>
+            </div>
+
+            <a href="{{ url_for(
+                'choose_group',
+                level=selected_level,
+                stream=selected_stream,
+                category=selected_category,
+                q=search_query
+            ) }}" class="back-button">
+                Back to Courses
+            </a>
+
+        </section>
+
+        {% endif %}
+
+        <h2 class="section-title">Available Courses</h2>
+
+        {% if courses %}
+
+        <div class="course-grid">
+
+            {% for course_id, course in courses %}
+
+            <div class="course-card">
+
+                <h3>{{ course.name }}</h3>
+
+                <span class="tag">{{ course.level }}</span>
+                <span class="tag">{{ course.stream }}</span>
+
+                <p><strong>Category:</strong> {{ course.category }}</p>
+
+                <p><strong>Duration:</strong> {{ course.duration }}</p>
+
+                <p><strong>Eligibility:</strong>
+                    {{ course.eligibility }}
+                </p>
+
+                <p>{{ course.description }}</p>
+
+                <a href="{{ url_for(
+                    'choose_group',
+                    course_id=course_id,
+                    level=selected_level,
+                    stream=selected_stream,
+                    category=selected_category,
+                    q=search_query
+                ) }}" class="details-button">
+                    View Details
+                </a>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-message">
+            <h3>No Courses Found</h3>
+            <p>Try changing your education level, stream or search keyword.</p>
+        </div>
+
+        {% endif %}
+
+    </main>
+
+    <footer>
+        <p>Student Career Guidance App</p>
+    </footer>
+
+</body>
+</html>

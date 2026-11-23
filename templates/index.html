@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Guidance System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <a href="/" class="logo">
+            <span class="logo-icon">🎓</span>
+            <span>Student<span class="logo-highlight">Guide</span></span>
+        </a>
+
+        <nav class="nav-links" id="navLinks">
+            <a href="/" class="active">Home</a>
+            <a href="/choose-group">Choose a Group</a>
+            <a href="/scholarships">Scholarships</a>
+            <a href="/schemes">Schemes</a>
+            <a href="/exams">Exams</a>
+            <a href="/login" class="login-link">Login</a>
+        </nav>
+
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">
+            ☰
+        </button>
+    </header>
+
+    <main>
+
+        <!-- HERO SECTION -->
+        <section class="hero">
+            <div class="hero-content">
+                <span class="hero-label">YOUR FUTURE STARTS HERE</span>
+
+                <h1>
+                    Discover Your Path.<br>
+                    <span>Build Your Future.</span>
+                </h1>
+
+                <p>
+                    Explore educational opportunities, scholarships,
+                    government schemes and entrance exams.
+                    Get the guidance you need to achieve your dreams.
+                </p>
+
+                <div class="hero-buttons">
+                    <a href="/choose-group" class="btn-primary">Explore Now →</a>
+                    <a href="/register" class="btn-outline">Get Started</a>
+                </div>
+
+                <div class="hero-stats">
+                    <div>
+                        <h3>Explore</h3>
+                        <p>Courses</p>
+                    </div>
+                    <div>
+                        <h3>Discover</h3>
+                        <p>Scholarships</p>
+                    </div>
+                    <div>
+                        <h3>Achieve</h3>
+                        <p>Your Goals</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-image">
+                <div class="hero-circle">
+                    <div class="education-illustration">🎓</div>
+                    <div class="floating-card floating-one">
+                        📚 <span>Learn & Grow</span>
+                    </div>
+                    <div class="floating-card floating-two">
+                        ⭐ <span>Explore Opportunities</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- WHAT WE OFFER -->
+        <section class="offer-section" id="offers">
+            <div class="section-heading">
+                <span class="section-label">OUR SERVICES</span>
+                <h2>What We <span>Offer</span></h2>
+                <p>Everything you need to make better educational decisions.</p>
+            </div>
+
+            <div class="offer-grid">
+
+                <a href="/choose-group" class="offer-card">
+                    <div class="offer-icon blue-icon">🎯</div>
+                    <h3>Student Guidance</h3>
+                    <p>Find the right academic group and explore your future options.</p>
+                    <span class="card-link">Explore More →</span>
+                </a>
+
+                <a href="/scholarships" class="offer-card">
+                    <div class="offer-icon sky-icon">🎓</div>
+                    <h3>Scholarships</h3>
+                    <p>Discover scholarships that support your education.</p>
+                    <span class="card-link">Explore More →</span>
+                </a>
+
+                <a href="/schemes" class="offer-card">
+                    <div class="offer-icon light-icon">🏛️</div>
+                    <h3>Government Schemes</h3>
+                    <p>Explore educational schemes and student benefits.</p>
+                    <span class="card-link">Explore More →</span>
+                </a>
+
+                <a href="/exams" class="offer-card">
+                    <div class="offer-icon blue-icon">📝</div>
+                    <h3>Entrance Exams</h3>
+                    <p>Learn about important entrance and competitive exams.</p>
+                    <span class="card-link">Explore More →</span>
+                </a>
+
+            </div>
+        </section>
+
+        <!-- HOW IT WORKS -->
+        <section class="how-section">
+            <div class="section-heading">
+                <span class="section-label">SIMPLE PROCESS</span>
+                <h2>How It <span>Works</span></h2>
+                <p>Your educational journey starts with three simple steps.</p>
+            </div>
+
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">01</div>
+                    <h3>Create Your Profile</h3>
+                    <p>Enter your academic details and interests.</p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">02</div>
+                    <h3>Explore Opportunities</h3>
+                    <p>Discover groups, scholarships, schemes and exams.</p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">03</div>
+                    <h3>Plan Your Future</h3>
+                    <p>Make informed decisions about your education.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CALL TO ACTION -->
+        <section class="cta-section">
+            <h2>Ready to Explore Your Future?</h2>
+            <p>Start discovering educational opportunities today.</p>
+            <a href="/register" class="btn-white">Join Us Today →</a>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h2>🎓 StudentGuide</h2>
+                <p>Guiding students towards a brighter educational future.</p>
+            </div>
+
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <a href="/">Home</a>
+                <a href="/choose-group">Choose a Group</a>
+                <a href="/scholarships">Scholarships</a>
+                <a href="/schemes">Schemes</a>
+                <a href="/exams">Exams</a>
+            </div>
+
+            <div class="footer-links">
+                <h3>Account</h3>
+                <a href="/login">Login</a>
+                <a href="/register">Register</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 Student Guidance System. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

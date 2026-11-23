@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exams - Student Career Guidance</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f3f6fb;
+            color: #243047;
+        }
+
+        header {
+            background: #173b70;
+            color: white;
+            padding: 25px 7%;
+        }
+
+        header h1 {
+            font-size: 27px;
+        }
+
+        header p {
+            margin-top: 8px;
+            color: #dce8fa;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #1764b1;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .filter-box, .details-box {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 12px #0000000d;
+        }
+
+        .filter-box h2 {
+            margin-bottom: 15px;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 12px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccd5e2;
+            border-radius: 7px;
+            font-size: 14px;
+        }
+
+        button, .view-btn {
+            background: #1764b1;
+            color: white;
+            border: none;
+            padding: 11px 17px;
+            border-radius: 7px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        button:hover, .view-btn:hover {
+            background: #10477f;
+        }
+
+        .section-title {
+            margin: 25px 0 18px;
+        }
+
+        .exam-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 18px;
+        }
+
+        .exam-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #0000000d;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .exam-card h3 {
+            color: #173b70;
+            font-size: 19px;
+        }
+
+        .category {
+            color: #1764b1;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .exam-card p {
+            color: #596579;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .view-btn {
+            align-self: flex-start;
+            margin-top: auto;
+        }
+
+        .details-box h2 {
+            color: #173b70;
+            margin-bottom: 10px;
+        }
+
+        .details-box > p {
+            color: #596579;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            padding: 14px 0;
+            border-bottom: 1px solid #e5eaf1;
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-item h3 {
+            color: #174d91;
+            font-size: 16px;
+            margin-bottom: 7px;
+        }
+
+        .detail-item p {
+            color: #475569;
+            line-height: 1.6;
+            font-size: 14px;
+            overflow-wrap: anywhere;
+        }
+
+        .official-link {
+            color: #1764b1;
+            font-weight: bold;
+        }
+
+        .notice {
+            background: #fff7df;
+            padding: 14px;
+            margin-top: 18px;
+            border-left: 4px solid #e5a000;
+            color: #72530a;
+            line-height: 1.5;
+            font-size: 13px;
+        }
+
+        .empty-message {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            color: #64748b;
+        }
+
+        @media(max-width: 600px) {
+            .container {
+                width: 92%;
+            }
+
+            header {
+                padding: 20px 5%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Exams and Career Opportunities</h1>
+    <p>Explore entrance exams, government exams and higher-study opportunities.</p>
+</header>
+
+<div class="container">
+
+    <a href="{{ url_for('dashboard') }}" class="back-link">
+        ← Back to Dashboard
+    </a>
+
+    <div id="examList">
+
+        <div class="filter-box">
+            <h2>Find Your Exam</h2>
+
+            <div class="filters">
+
+                <input type="text"
+                       id="searchInput"
+                       placeholder="Search exam name...">
+
+                <select id="categoryFilter">
+                    <option value="">All Categories</option>
+                    <option>Engineering</option>
+                    <option>Medical</option>
+                    <option>Science</option>
+                    <option>University</option>
+                    <option>Government Jobs</option>
+                    <option>Banking</option>
+                    <option>Railway</option>
+                    <option>Management</option>
+                    <option>Law</option>
+                    <option>Design</option>
+                    <option>Agriculture</option>
+                    <option>Teaching</option>
+                    <option>Defence</option>
+                    <option>Other</option>
+                </select>
+
+                <button onclick="displayExams()">Search</button>
+
+            </div>
+        </div>
+
+        <h2 class="section-title">Available Examinations</h2>
+
+        <div class="exam-grid" id="examCards"></div>
+
+    </div>
+
+    <div id="examDetails" style="display:none;"></div>
+
+</div>
+
+<script>
+
+// PART 5B EXAM DATA WILL BE ADDED HERE
+const exams = [
+    {
+        name: "JEE Main",
+        category: "Engineering",
+        purpose: "Admission to NITs, IIITs and other engineering colleges.",
+        eligibility: "Candidates who passed or are appearing for Class 12.",
+        qualification: "Class 12 with required subjects.",
+        age: "No fixed age limit; attempt rules apply.",
+        subjects: "Physics, Chemistry, Mathematics.",
+        pattern: "Computer-based examination with objective questions.",
+        selection: "Based on JEE Main rank and counselling.",
+        authority: "National Testing Agency (NTA).",
+        website: "https://jeemain.nta.nic.in/"
+    },
+    {
+        name: "JEE Advanced",
+        category: "Engineering",
+        purpose: "Admission to IITs.",
+        eligibility: "Candidates who qualify JEE Main and meet other criteria.",
+        qualification: "Class 12 or equivalent with required subjects.",
+        age: "As specified in the official notification.",
+        subjects: "Physics, Chemistry, Mathematics.",
+        pattern: "Computer-based examination with multiple question types.",
+        selection: "Based on JEE Advanced rank.",
+        authority: "IIT conducting the examination.",
+        website: "https://jeeadv.ac.in/"
+    },
+    {
+        name: "GATE",
+        category: "Engineering",
+        purpose: "Admission to postgraduate programmes and recruitment in some PSUs.",
+        eligibility: "Eligible undergraduate students and graduates.",
+        qualification: "Relevant degree in Engineering, Science, Technology or related fields.",
+        age: "No age limit.",
+        subjects: "Subject-specific syllabus and General Aptitude.",
+        pattern: "Computer-based examination.",
+        selection: "GATE score and institute or employer requirements.",
+        authority: "IISc and IITs.",
+        website: "https://gate2027.iitg.ac.in/"
+    },
+    {
+        name: "VITEEE",
+        category: "Engineering",
+        purpose: "Admission to VIT engineering programmes.",
+        eligibility: "Candidates who meet VIT admission requirements.",
+        qualification: "Class 12 with required subjects.",
+        age: "As specified in the admission notification.",
+        subjects: "Physics, Chemistry, Mathematics or Biology, English and Aptitude.",
+        pattern: "Computer-based examination.",
+        selection: "Entrance score and counselling.",
+        authority: "Vellore Institute of Technology.",
+        website: "https://viteee.vit.ac.in/"
+    },
+    {
+        name: "BITSAT",
+        category: "Engineering",
+        purpose: "Admission to BITS Pilani programmes.",
+        eligibility: "Candidates satisfying BITS admission requirements.",
+        qualification: "Class 12 with required subjects.",
+        age: "As specified in the official notification.",
+        subjects: "Physics, Chemistry, Mathematics, English and Logical Reasoning.",
+        pattern: "Computer-based examination.",
+        selection: "BITSAT score and admission process.",
+        authority: "BITS Pilani.",
+        website: "https://www.bitsadmission.com/"
+    },
+    {
+        name: "NEET UG",
+        category: "Medical",
+        purpose: "Admission to MBBS, BDS and other medical courses.",
+        eligibility: "Candidates meeting the NEET eligibility criteria.",
+        qualification: "Class 12 with Physics, Chemistry and Biology/Biotechnology and English.",
+        age: "Minimum age is generally 17 years by the prescribed date.",
+        subjects: "Physics, Chemistry and Biology.",
+        pattern: "Pen-and-paper examination with objective questions.",
+        selection: "NEET score, merit list and counselling.",
+        authority: "National Testing Agency (NTA).",
+        website: "https://exams.nta.nic.in/neet-ug/"
+    },
+    {
+        name: "NEET PG",
+        category: "Medical",
+        purpose: "Admission to postgraduate medical courses.",
+        eligibility: "Candidates meeting the current NEET PG criteria.",
+        qualification: "MBBS degree and required internship completion.",
+        age: "No fixed upper age limit.",
+        subjects: "MBBS-level medical subjects.",
+        pattern: "Computer-based examination.",
+        selection: "Score, merit list and counselling.",
+        authority: "National Board of Examinations in Medical Sciences.",
+        website: "https://natboard.edu.in/"
+    },
+    {
+        name: "CUET UG",
+        category: "University",
+        purpose: "Admission to undergraduate courses in participating universities.",
+        eligibility: "Class 12 passed or appearing candidates, subject to university rules.",
+        qualification: "Class 12 or equivalent.",
+        age: "Depends on the university and course.",
+        subjects: "Language, domain subjects and General Aptitude Test as applicable.",
+        pattern: "Computer-based examination.",
+        selection: "CUET score and university admission criteria.",
+        authority: "National Testing Agency (NTA).",
+        website: "https://exams.nta.nic.in/cuet-ug/"
+    },
+    {
+        name: "CUET PG",
+        category: "University",
+        purpose: "Admission to postgraduate courses.",
+        eligibility: "Candidates meeting the participating university requirements.",
+        qualification: "Relevant bachelor's degree.",
+        age: "Depends on the university.",
+        subjects: "Subject-specific syllabus.",
+        pattern: "Computer-based examination.",
+        selection: "CUET PG score and university admission process.",
+        authority: "National Testing Agency (NTA).",
+        website: "https://exams.nta.nic.in/cuet-pg/"
+    },{
+        name: "UPSC Civil Services",
+        category: "Government Jobs",
+        purpose: "Recruitment for IAS, IPS, IFS and other civil services.",
+        eligibility: "Eligible Indian citizens as per notification.",
+        qualification: "Recognised bachelor's degree.",
+        age: "Generally 21–32 years for General category, with relaxations.",
+        subjects: "General Studies, CSAT, current affairs and optional subject.",
+        pattern: "Preliminary, Main and Interview.",
+        selection: "Prelims, Mains and Personality Test.",
+        authority: "Union Public Service Commission.",
+        website: "https://upsc.gov.in/"
+    },
+    {
+        name: "TNPSC Group 1",
+        category: "Government Jobs",
+        purpose: "Recruitment for senior Tamil Nadu government posts.",
+        eligibility: "Candidates meeting the post-specific rules.",
+        qualification: "Generally a bachelor's degree.",
+        age: "Varies by post and category.",
+        subjects: "General Studies, Aptitude and relevant topics.",
+        pattern: "Preliminary, Main and Interview.",
+        selection: "Prelims, Mains and Interview.",
+        authority: "Tamil Nadu Public Service Commission.",
+        website: "https://www.tnpsc.gov.in/"
+    },
+    {
+        name: "TNPSC Group 2 and 2A",
+        category: "Government Jobs",
+        purpose: "Recruitment for Tamil Nadu government services.",
+        eligibility: "As specified for each post.",
+        qualification: "Degree or other specified qualification.",
+        age: "Varies by post and category.",
+        subjects: "General Studies, Aptitude and General Tamil or English.",
+        pattern: "Written examination; selection stages vary by post.",
+        selection: "Written examination and other required stages.",
+        authority: "Tamil Nadu Public Service Commission.",
+        website: "https://www.tnpsc.gov.in/"
+    },
+    {
+        name: "TNPSC Group 4",
+        category: "Government Jobs",
+        purpose: "Recruitment for various clerical and administrative posts.",
+        eligibility: "Candidates meeting post-specific requirements.",
+        qualification: "Generally SSLC or equivalent for many posts.",
+        age: "Varies by post and category.",
+        subjects: "General Studies, Aptitude and General Tamil or English.",
+        pattern: "Written objective examination.",
+        selection: "Written examination and certificate verification.",
+        authority: "Tamil Nadu Public Service Commission.",
+        website: "https://www.tnpsc.gov.in/"
+    },
+    {
+        name: "SSC CGL",
+        category: "Government Jobs",
+        purpose: "Recruitment for various central government graduate-level posts.",
+        eligibility: "Candidates meeting the post-specific criteria.",
+        qualification: "Bachelor's degree.",
+        age: "Usually 18–32 years, depending on the post.",
+        subjects: "Reasoning, General Awareness, Quantitative Aptitude and English.",
+        pattern: "Computer-based examination in tiers.",
+        selection: "Tier examinations and document verification.",
+        authority: "Staff Selection Commission.",
+        website: "https://ssc.gov.in/"
+    },
+    {
+        name: "SSC CHSL",
+        category: "Government Jobs",
+        purpose: "Recruitment for clerical and data-entry posts.",
+        eligibility: "Candidates meeting the notification criteria.",
+        qualification: "Class 12 or equivalent.",
+        age: "Usually 18–27 years, with applicable relaxations.",
+        subjects: "Reasoning, General Awareness, Quantitative Aptitude and English.",
+        pattern: "Computer-based examination and skill or typing test as applicable.",
+        selection: "Written examination and required skill tests.",
+        authority: "Staff Selection Commission.",
+        website: "https://ssc.gov.in/"
+    },
+    {
+        name: "IBPS PO",
+        category: "Banking",
+        purpose: "Recruitment of Probationary Officers in participating banks.",
+        eligibility: "Candidates meeting IBPS notification criteria.",
+        qualification: "Bachelor's degree.",
+        age: "Usually 20–30 years, with applicable relaxations.",
+        subjects: "Reasoning, Quantitative Aptitude, English and Banking Awareness.",
+        pattern: "Preliminary, Main and Interview.",
+        selection: "Prelims, Mains and Interview.",
+        authority: "Institute of Banking Personnel Selection.",
+        website: "https://www.ibps.in/"
+    },
+    {
+        name: "SBI PO",
+        category: "Banking",
+        purpose: "Recruitment of Probationary Officers in State Bank of India.",
+        eligibility: "Candidates meeting SBI notification criteria.",
+        qualification: "Bachelor's degree.",
+        age: "Usually 21–30 years, with applicable relaxations.",
+        subjects: "Reasoning, Data Analysis, English and General Awareness.",
+        pattern: "Preliminary, Main and Interview-related stages.",
+        selection: "Prelims, Mains and final selection stages.",
+        authority: "State Bank of India.",
+        website: "https://sbi.co.in/web/careers"
+    },
+    {
+        name: "CAT",
+        category: "Management",
+        purpose: "Admission to MBA and management programmes.",
+        eligibility: "Candidates meeting participating institute criteria.",
+        qualification: "Bachelor's degree with required marks.",
+        age: "No age limit.",
+        subjects: "Verbal Ability, Reading Comprehension, Data Interpretation, Logical Reasoning and Quantitative Aptitude.",
+        pattern: "Computer-based examination.",
+        selection: "CAT score, written assessment, interview and institute criteria.",
+        authority: "IIMs.",
+        website: "https://iimcat.ac.in/"
+    },
+    {
+        name: "CLAT UG",
+        category: "Law",
+        purpose: "Admission to undergraduate law programmes at participating NLUs.",
+        eligibility: "Candidates meeting CLAT eligibility rules.",
+        qualification: "Class 12 or equivalent.",
+        age: "No upper age limit under current general rules.",
+        subjects: "English, Current Affairs, Legal Reasoning, Logical Reasoning and Quantitative Techniques.",
+        pattern: "Objective examination.",
+        selection: "CLAT rank and counselling.",
+        authority: "Consortium of National Law Universities.",
+        website: "https://consortiumofnlus.ac.in/"
+    },
+    {
+        name: "NIFT Entrance Examination",
+        category: "Design",
+        purpose: "Admission to fashion and design programmes.",
+        eligibility: "Depends on the programme.",
+        qualification: "Class 12 for undergraduate programmes.",
+        age: "Depends on programme and admission notification.",
+        subjects: "Creative Ability, General Ability and other programme-specific areas.",
+        pattern: "Written tests and practical or interview stages as applicable.",
+        selection: "Entrance tests and further selection stages.",
+        authority: "National Institute of Fashion Technology.",
+        website: "https://www.nift.ac.in/"
+    },
+    {
+        name: "CTET",
+        category: "Teaching",
+        purpose: "Eligibility test for teaching at specified school levels.",
+        eligibility: "Candidates meeting teacher education requirements.",
+        qualification: "D.El.Ed, B.Ed or other NCTE-recognised qualifications as applicable.",
+        age: "No fixed upper age limit.",
+        subjects: "Child Development, Languages, Mathematics, Environmental Studies and subject areas.",
+        pattern: "Objective examination with Paper I and Paper II.",
+        selection: "Qualifying marks as specified by the authority.",
+        authority: "Central Board of Secondary Education.",
+        website: "https://ctet.nic.in/"
+    },
+    {
+        name: "TNTET",
+        category: "Teaching",
+        purpose: "Teacher eligibility test for Tamil Nadu.",
+        eligibility: "Candidates meeting the prescribed teacher education criteria.",
+        qualification: "Relevant teacher education qualification.",
+        age: "As specified in the notification.",
+        subjects: "Child Development, Languages, Mathematics, Science or Social Science.",
+        pattern: "Paper I and Paper II.",
+        selection: "Qualifying examination.",
+        authority: "Teachers Recruitment Board, Tamil Nadu.",
+        website: "https://trb.tn.gov.in/"
+    },
+    {
+        name: "IISER Aptitude Test (IAT)",
+        category: "Science",
+        purpose: "Admission to undergraduate science programmes at IISERs.",
+        eligibility: "Candidates meeting the current IISER admission rules.",
+        qualification: "Class 12 with required science subjects.",
+        age: "As specified in the admission notification.",
+        subjects: "Biology, Chemistry, Mathematics and Physics.",
+        pattern: "Computer-based objective examination.",
+        selection: "IAT score and counselling.",
+        authority: "IISER admission authority.",
+        website: "https://iiseradmission.in/"
+    },
+    {
+        name: "NEST",
+        category: "Science",
+        purpose: "Admission to integrated science programmes at NISER and CEBS.",
+        eligibility: "Candidates meeting the NEST eligibility rules.",
+        qualification: "Class 12 with science subjects.",
+        age: "As specified in the notification.",
+        subjects: "Biology, Chemistry, Mathematics and Physics.",
+        pattern: "Computer-based examination.",
+        selection: "NEST merit list and admission process.",
+        authority: "NISER and UM-DAE CEBS.",
+        website: "https://www.nestexam.in/"
+    },
+    {
+        name: "IIT JAM",
+        category: "Science",
+        purpose: "Admission to postgraduate science programmes.",
+        eligibility: "Candidates meeting the JAM admission requirements.",
+        qualification: "Bachelor's degree.",
+        age: "No age limit.",
+        subjects: "Mathematics, Physics, Chemistry, Biotechnology and other available papers.",
+        pattern: "Computer-based examination.",
+        selection: "JAM score and admission process.",
+        authority: "IIT conducting the examination.",
+        website: "https://jam2027.iitb.ac.in/"
+    },
+    {
+        name: "CSIR UGC NET",
+        category: "Science",
+        purpose: "Eligibility for Junior Research Fellowship and Assistant Professor roles in science subjects.",
+        eligibility: "Candidates meeting the CSIR NET criteria.",
+        qualification: "Relevant postgraduate degree or eligible equivalent qualification.",
+        age: "Age limit applies for JRF; rules differ for other categories.",
+        subjects: "Life Sciences, Chemical Sciences, Physical Sciences, Mathematical Sciences and Earth Sciences.",
+        pattern: "Computer-based examination.",
+        selection: "Examination score and applicable eligibility criteria.",
+        authority: "National Testing Agency and CSIR.",
+        website: "https://csirnet.nta.ac.in/"
+    },{
+        name: "ICAR AIEEA PG",
+        category: "Agriculture",
+        purpose: "Admission to postgraduate agriculture and allied science programmes.",
+        eligibility: "Candidates meeting ICAR admission requirements.",
+        qualification: "Relevant bachelor's degree.",
+        age: "As specified in the admission notification.",
+        subjects: "Agriculture and allied subject-specific topics.",
+        pattern: "Computer-based examination.",
+        selection: "Entrance score and counselling.",
+        authority: "National Testing Agency / ICAR.",
+        website: "https://exams.nta.nic.in/"
+    },
+    {
+        name: "ICAR AICE JRF/SRF",
+        category: "Agriculture",
+        purpose: "Admission to doctoral programmes with Junior or Senior Research Fellowship opportunities.",
+        eligibility: "Candidates meeting the current ICAR fellowship criteria.",
+        qualification: "Relevant postgraduate degree.",
+        age: "As specified in the official notification.",
+        subjects: "Agriculture and allied research subjects.",
+        pattern: "As specified in the examination notification.",
+        selection: "Entrance examination and applicable admission criteria.",
+        authority: "Indian Council of Agricultural Research.",
+        website: "https://icar.org.in/"
+    },
+    {
+        name: "ASRB NET",
+        category: "Agriculture",
+        purpose: "Eligibility for Lecturer or Assistant Professor roles in agricultural universities.",
+        eligibility: "Candidates meeting ASRB eligibility rules.",
+        qualification: "Relevant master's degree.",
+        age: "No upper age limit generally; check notification.",
+        subjects: "Agriculture and allied science subjects.",
+        pattern: "Computer-based examination.",
+        selection: "Qualifying examination.",
+        authority: "Agricultural Scientists Recruitment Board.",
+        website: "https://asrb.org.in/"
+    },
+    {
+        name: "ASRB Agricultural Research Service (ARS)",
+        category: "Agriculture",
+        purpose: "Recruitment of agricultural scientists.",
+        eligibility: "Candidates meeting ARS recruitment requirements.",
+        qualification: "Relevant postgraduate qualification.",
+        age: "As specified in the recruitment notification.",
+        subjects: "Agriculture and allied research subjects.",
+        pattern: "Preliminary and main examination stages as notified.",
+        selection: "Written examination and interview.",
+        authority: "Agricultural Scientists Recruitment Board.",
+        website: "https://asrb.org.in/"
+    },{
+        name: "NDA and NA",
+        category: "Defence",
+        purpose: "Entry into the Army, Navy and Air Force wings of the National Defence Academy and Naval Academy.",
+        eligibility: "Candidates meeting UPSC eligibility conditions.",
+        qualification: "Class 12; Physics and Mathematics are required for specified Navy and Air Force entries.",
+        age: "As specified in the UPSC notification.",
+        subjects: "Mathematics and General Ability Test.",
+        pattern: "Written examination followed by SSB interview.",
+        selection: "Written exam, SSB interview and medical examination.",
+        authority: "Union Public Service Commission.",
+        website: "https://upsc.gov.in/"
+    },
+    {
+        name: "CDS",
+        category: "Defence",
+        purpose: "Entry into the Indian Military Academy, Naval Academy, Air Force Academy and Officers Training Academy.",
+        eligibility: "Candidates meeting academy-specific eligibility rules.",
+        qualification: "Degree; specific qualifications apply for Naval and Air Force entries.",
+        age: "As specified in the UPSC notification.",
+        subjects: "English, General Knowledge and Elementary Mathematics; papers vary by academy.",
+        pattern: "Written examination followed by SSB interview.",
+        selection: "Written exam, SSB interview and medical examination.",
+        authority: "Union Public Service Commission.",
+        website: "https://upsc.gov.in/"
+    },
+    {
+        name: "AFCAT",
+        category: "Defence",
+        purpose: "Recruitment into eligible branches of the Indian Air Force.",
+        eligibility: "Candidates meeting branch-specific conditions.",
+        qualification: "Graduation or relevant engineering qualification, depending on branch.",
+        age: "Varies by branch and entry.",
+        subjects: "General Awareness, Verbal Ability, Numerical Ability, Reasoning and Military Aptitude.",
+        pattern: "Computer-based examination; further stages may apply.",
+        selection: "AFCAT, AFSB testing and medical examination.",
+        authority: "Indian Air Force.",
+        website: "https://afcat.cdac.in/"
+    },
+    {
+        name: "Agniveer Army",
+        category: "Defence",
+        purpose: "Recruitment into eligible Agniveer categories of the Indian Army.",
+        eligibility: "Candidates meeting category-specific recruitment rules.",
+        qualification: "Class 8, 10 or 12 depending on the post.",
+        age: "As specified in the current recruitment notification.",
+        subjects: "General Knowledge, General Science, Mathematics and Reasoning, depending on category.",
+        pattern: "Online examination and physical recruitment stages.",
+        selection: "Online test, physical tests, medical examination and document verification.",
+        authority: "Indian Army.",
+        website: "https://joinindianarmy.nic.in/"
+    },
+    {
+        name: "Agniveer Navy",
+        category: "Defence",
+        purpose: "Recruitment into eligible Agniveer roles in the Indian Navy.",
+        eligibility: "Candidates meeting the current Navy recruitment rules.",
+        qualification: "Class 10 or 12 with specified subjects, depending on entry.",
+        age: "As specified in the recruitment notification.",
+        subjects: "Science, Mathematics, English and General Awareness, depending on entry.",
+        pattern: "Computer-based examination and physical fitness stages.",
+        selection: "Written test, physical fitness test and medical examination.",
+        authority: "Indian Navy.",
+        website: "https://joinindiannavy.gov.in/"
+    },
+    {
+        name: "Agniveervayu",
+        category: "Defence",
+        purpose: "Recruitment into eligible Agniveervayu roles in the Indian Air Force.",
+        eligibility: "Candidates meeting the current Air Force recruitment rules.",
+        qualification: "Class 12 or relevant diploma, depending on entry.",
+        age: "As specified in the recruitment notification.",
+        subjects: "Physics, Mathematics and English for science entry; other subjects for non-science entry.",
+        pattern: "Online examination and further selection stages.",
+        selection: "Online test, physical fitness test, adaptability tests and medical examination.",
+        authority: "Indian Air Force.",
+        website: "https://agnipathvayu.cdac.in/"
+    },
+    {
+        name: "RRB NTPC",
+        category: "Railway",
+        purpose: "Recruitment for various Non-Technical Popular Category railway posts.",
+        eligibility: "Depends on the post.",
+        qualification: "Class 12 or bachelor's degree, depending on the post.",
+        age: "As specified in the official notification.",
+        subjects: "Mathematics, General Intelligence, Reasoning and General Awareness.",
+        pattern: "Computer-based examination in stages.",
+        selection: "CBT, skill test or aptitude test where applicable, and document verification.",
+        authority: "Railway Recruitment Boards.",
+        website: "https://www.rrbcdg.gov.in/"
+    },
+    {
+        name: "RRB Group D",
+        category: "Railway",
+        purpose: "Recruitment for various railway Level 1 posts.",
+        eligibility: "Candidates meeting the notification requirements.",
+        qualification: "Class 10 or ITI or equivalent qualification as specified.",
+        age: "As specified in the official notification.",
+        subjects: "Mathematics, Reasoning, General Science and General Awareness.",
+        pattern: "Computer-based examination.",
+        selection: "CBT, physical efficiency test, document verification and medical examination.",
+        authority: "Railway Recruitment Boards.",
+        website: "https://www.rrbcdg.gov.in/"
+    },
+    {
+        name: "RRB ALP",
+        category: "Railway",
+        purpose: "Recruitment for Assistant Loco Pilot posts.",
+        eligibility: "Candidates meeting technical qualification requirements.",
+        qualification: "Matriculation with ITI or relevant engineering diploma or degree.",
+        age: "As specified in the official notification.",
+        subjects: "Mathematics, Reasoning, Basic Science and Engineering, and technical subjects.",
+        pattern: "Computer-based tests in multiple stages.",
+        selection: "CBT stages, aptitude test, document verification and medical examination.",
+        authority: "Railway Recruitment Boards.",
+        website: "https://www.rrbcdg.gov.in/"
+    },
+    {
+        name: "RRB JE",
+        category: "Railway",
+        purpose: "Recruitment for Junior Engineer railway posts.",
+        eligibility: "Candidates meeting the relevant technical requirements.",
+        qualification: "Relevant engineering diploma or degree.",
+        age: "As specified in the official notification.",
+        subjects: "General Awareness, Physics and Chemistry, Computers, Environment and Technical Subjects.",
+        pattern: "Computer-based tests in stages.",
+        selection: "CBT stages, document verification and medical examination.",
+        authority: "Railway Recruitment Boards.",
+        website: "https://www.rrbcdg.gov.in/"
+    },
+    {
+        name: "RPF Constable",
+        category: "Railway",
+        purpose: "Recruitment for Railway Protection Force Constable posts.",
+        eligibility: "Candidates meeting RPF recruitment requirements.",
+        qualification: "Class 10 or equivalent.",
+        age: "As specified in the official notification.",
+        subjects: "General Awareness, Arithmetic and General Intelligence and Reasoning.",
+        pattern: "Computer-based examination.",
+        selection: "CBT, physical tests, document verification and medical examination.",
+        authority: "Railway Protection Force.",
+        website: "https://rpf.indianrailways.gov.in/"
+    },
+    {
+        name: "RPF Sub-Inspector",
+        category: "Railway",
+        purpose: "Recruitment for Railway Protection Force Sub-Inspector posts.",
+        eligibility: "Candidates meeting RPF recruitment requirements.",
+        qualification: "Bachelor's degree.",
+        age: "As specified in the official notification.",
+        subjects: "General Awareness, Arithmetic and General Intelligence and Reasoning.",
+        pattern: "Computer-based examination.",
+        selection: "CBT, physical tests, document verification and medical examination.",
+        authority: "Railway Protection Force.",
+        website: "https://rpf.indianrailways.gov.in/"
+    },
+    {
+        name: "RRB NTPC",
+        category: "Railway",
+        purpose: "Recruitment for various Non-Technical Popular Category railway posts.",
+        eligibility: "Depends on the post.",
+        qualification: "Class 12 or bachelor's degree, depending on the post.",
+        age: "As specified in the official notification.",
+        subjects: "Mathematics, General Intelligence, Reasoning and General Awareness.",
+        pattern: "Computer-based examination in stages.",
+        selection: "CBT, skill test or aptitude test where applicable, and document verification.",
+        authority: "Railway Recruitment Boards.",
+        website: "https://www.rrbcdg.gov.in/"
+    },
+    {
+        name: "RRB Group D",
+        category: "Railway",
+        purpose: "Recruitment for various railway Level 1 posts.",
+        eligibility: "Candidates meeting the notification requirements.",
+        qualification: "Class 10 or ITI or equivalent qualification as specified.",
+        age: "As specified in the official notification.",
+        subjects: "Mathematics, Reasoning, General Science and General Awareness.",
+        pattern: "Computer-based examination.",
+        selection: "CBT, physical efficiency test, document verification and medical examination.",
+        authority: "Railway Recruitment Boards.",
+        website: "https://www.rrbcdg.gov.in/"
+    },
+    {
+        name: "RRB ALP",
+        category: "Railway",
+        purpose: "Recruitment for Assistant Loco Pilot posts.",
+        eligibility: "Candidates meeting technical qualification requirements.",
+        qualification: "Matriculation with ITI or relevant engineering diploma or degree.",
+        age: "As specified in the official notification.",
+        subjects: "Mathematics, Reasoning, Basic Science and Engineering, and technical subjects.",
+        pattern: "Computer-based tests in multiple stages.",
+        selection: "CBT stages, aptitude test, document verification and medical examination.",
+        authority: "Railway Recruitment Boards.",
+        website: "https://www.rrbcdg.gov.in/"
+    },
+    {
+        name: "RRB JE",
+        category: "Railway",
+        purpose: "Recruitment for Junior Engineer railway posts.",
+        eligibility: "Candidates meeting the relevant technical requirements.",
+        qualification: "Relevant engineering diploma or degree.",
+        age: "As specified in the official notification.",
+        subjects: "General Awareness, Physics and Chemistry, Computers, Environment and Technical Subjects.",
+        pattern: "Computer-based tests in stages.",
+        selection: "CBT stages, document verification and medical examination.",
+        authority: "Railway Recruitment Boards.",
+        website: "https://www.rrbcdg.gov.in/"
+    },
+    {
+        name: "RPF Constable",
+        category: "Railway",
+        purpose: "Recruitment for Railway Protection Force Constable posts.",
+        eligibility: "Candidates meeting RPF recruitment requirements.",
+        qualification: "Class 10 or equivalent.",
+        age: "As specified in the official notification.",
+        subjects: "General Awareness, Arithmetic and General Intelligence and Reasoning.",
+        pattern: "Computer-based examination.",
+        selection: "CBT, physical tests, document verification and medical examination.",
+        authority: "Railway Protection Force.",
+        website: "https://rpf.indianrailways.gov.in/"
+    },
+    {
+        name: "RPF Sub-Inspector",
+        category: "Railway",
+        purpose: "Recruitment for Railway Protection Force Sub-Inspector posts.",
+        eligibility: "Candidates meeting RPF recruitment requirements.",
+        qualification: "Bachelor's degree.",
+        age: "As specified in the official notification.",
+        subjects: "General Awareness, Arithmetic and General Intelligence and Reasoning.",
+        pattern: "Computer-based examination.",
+        selection: "CBT, physical tests, document verification and medical examination.",
+        authority: "Railway Protection Force.",
+        website: "https://rpf.indianrailways.gov.in/"
+    },
+];
+
+
+// End of exam data
+
+// PART 5C DISPLAY FUNCTIONS WILL BE ADDED HERE
+function displayExams() {
+    const searchValue = document
+        .getElementById("searchInput")
+        .value.toLowerCase();
+
+    const selectedCategory = document
+        .getElementById("categoryFilter")
+        .value;
+
+    const examCards = document.getElementById("examCards");
+
+    const filteredExams = exams.filter(exam => {
+        const matchesName = exam.name
+            .toLowerCase()
+            .includes(searchValue);
+
+        const matchesCategory =
+            selectedCategory === "" ||
+            exam.category === selectedCategory;
+
+        return matchesName && matchesCategory;
+    });
+
+    examCards.innerHTML = "";
+
+    if (filteredExams.length === 0) {
+        examCards.innerHTML = "<p>No exams found.</p>";
+        return;
+    }
+
+    filteredExams.forEach(exam => {
+        const originalIndex = exams.indexOf(exam);
+
+        examCards.innerHTML += `
+            <div class="exam-card">
+                <h3>${exam.name}</h3>
+                <p><strong>Category:</strong> ${exam.category}</p>
+                <p>${exam.purpose}</p>
+
+                <button onclick="viewExam(${originalIndex})">
+                    View Details
+                </button>
+            </div>
+        `;
+    });
+}function viewExam(index) {
+    const exam = exams[index];
+
+    if (!exam) return;
+
+    document.getElementById("examCards").style.display = "none";
+
+    const details = document.getElementById("examDetails");
+
+    details.style.display = "block";
+
+    details.innerHTML = `
+        <h2>${exam.name}</h2>
+
+        <p><strong>Category:</strong> ${exam.category}</p>
+
+        <p><strong>Purpose:</strong> ${exam.purpose}</p>
+
+        <p><strong>Eligibility:</strong> ${exam.eligibility}</p>
+
+        <p><strong>Educational Qualification:</strong> ${exam.qualification}</p>
+
+        <p><strong>Age Limit:</strong> ${exam.age}</p>
+
+        <p><strong>Subjects:</strong> ${exam.subjects}</p>
+
+        <p><strong>Exam Pattern:</strong> ${exam.pattern}</p>
+
+        <p><strong>Selection Process:</strong> ${exam.selection}</p>
+
+        <p><strong>Conducting Authority:</strong> ${exam.authority}</p>
+
+        <p>
+            <strong>Official Website:</strong>
+            <a href="${exam.website}" target="_blank" rel="noopener noreferrer">
+                Visit Official Website
+            </a>
+        </p>
+
+        <button onclick="backToExams()">Back to Exams</button>
+    `;
+}
+function backToExams() {
+    document.getElementById("examDetails").style.display = "none";
+    document.getElementById("examCards").style.display = "grid";
+}
+
+displayExams();
+
+</script>
+
+</body>
+</html>

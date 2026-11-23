@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | StudentGuide</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">StudentGuide</div>
+        <a href="/" class="btn">Home</a>
+    </nav>
+
+    <section class="page-section">
+        <div class="page-heading">
+            <h1>Student Dashboard</h1>
+            <p>Explore guidance and opportunities for your future.</p>
+        </div>
+
+        <div class="features-grid">
+
+            <div class="feature-card">
+                <h2>Student Guidance</h2>
+                <p>Find guidance based on your education level.</p>
+                <a href="/choose-group" class="btn">Explore</a>
+            </div>
+
+            <div class="feature-card">
+                <h2>Scholarships</h2>
+                <p>Discover scholarship opportunities for students.</p>
+                <a href="/scholarships" class="btn">Explore</a>
+            </div>
+
+            <div class="feature-card">
+                <h2>Government Schemes</h2>
+                <p>Learn about useful government schemes.</p>
+                <a href="/schemes" class="btn">Explore</a>
+            </div>
+
+            <div class="feature-card">
+                <h2>Entrance Exams</h2>
+                <p>Explore entrance exams and their details.</p>
+                <a href="/exams" class="btn">Explore</a>
+            </div>
+            <div class="feature-card">
+               <h2>Create Your Profile</h2>
+               <p>Enter your academic details and career interests.</p>
+
+               <a href="{{ url_for('profile') }}"
+              class="btn"
+              style="position: relative; z-index: 10;">
+               Open Profile
+               </a>
+         </div>
+            </div>
+
+        </div>
+    </section>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
